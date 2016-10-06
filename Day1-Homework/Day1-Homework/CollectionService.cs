@@ -15,8 +15,12 @@ namespace Day1_Homework
         /// <param name="propertyName">屬性名稱</param>
         /// <param name="groupCount">幾筆一組</param>
         /// <returns>物件集合內某屬性的每組屬性值加總</returns>
-        public List<int> SumPropertyValueByGroupCount<T>(IEnumerable<T> collection, string propertyName, int groupCount) where T : class
+        public List<int> SumPropertyValueByGroupCount<T>(IEnumerable<T> collection, string propertyName, int groupCount)
         {
+            if (collection == null) throw new ArgumentNullException("collection", "物件集合參數值不得為Null");
+            if (string.IsNullOrEmpty(propertyName)) throw new ArgumentNullException("propertyName", "屬性名稱參數值不得為空字串或Null");
+            if (groupCount < 1) throw new ArgumentException("groupCount", "幾筆一組的參數值必須大於0");
+
             List<int> result = new List<int>();
 
             for (int index = 0; index < collection.Count(); index += groupCount)
@@ -43,7 +47,9 @@ namespace Day1_Homework
 
             if (this.CheckPropertyTypeIsInt(propertyInfo))
             {
-                result = collection.Select(i => Convert.ToInt32(propertyInfo.GetValue(i))).Sum();
+                result = collection.Where(item => item != null)
+                                   .Select(item => Convert.ToInt32(propertyInfo.GetValue(item)))
+                                   .Sum();
             }
 
             return result;
